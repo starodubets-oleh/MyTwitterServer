@@ -28,8 +28,8 @@ const showPost = (req, res) => {
 };
 
 const createPost = (req, res) => {
-  const {post, userId} = req.body
-  models.Posts.create({post, userId})
+  const {post} = req.body
+  models.Posts.create({post})
     .then(result =>{
       res.status(201).json({
         massage: "Post created successfully",
@@ -46,8 +46,8 @@ const createPost = (req, res) => {
 
 const updatePost = (req, res) =>{
   const {id} = req.params;
-  const {updatedPost, userId} = req.body;
-  models.Posts.update( {post: updatedPost}, {where: {id, userId}})
+  const {updatedPost} = req.body;
+  models.Posts.update( {post: updatedPost}, {where: {id}})
     .then(results =>{
       if (!!results[0]) {
         res.status(200).json({
@@ -70,8 +70,7 @@ const updatePost = (req, res) =>{
 
 const deletePost = (req, res) =>{
   const {id} = req.params;
-  const {userId} = req.body;
-  models.Posts.destroy({where: {id, userId}})
+  models.Posts.destroy({where: {id}})
     .then(() =>{
       res.status(200).json({
         message: "Post deleted successfully",
