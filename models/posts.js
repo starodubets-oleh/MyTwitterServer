@@ -1,21 +1,23 @@
-const Sequelize = require('sequelize');
-
-const config = require('../config/config');
-
-const sequelize = new Sequelize(config);
-
-const Posts = sequelize.define('posts', {
-  id: {
-    allowNull: false,
-    autoIncrement: true,
-    primaryKey: true,
-    type: Sequelize.DataTypes.INTEGER
-  },
-  massage: {
-    type: Sequelize.DataTypes.STRING
-  }
-}, {
-  timestamps: true
-});
-
-module.exports = Posts;
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Posts extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  };
+  Posts.init({
+    post: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Posts',
+  });
+  return Posts;
+};
