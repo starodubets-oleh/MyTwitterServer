@@ -9,7 +9,7 @@ const verifyAuth = (req, res, next) => {
     next()
   } catch (error) {
     return res.status(401).json({
-      massage: 'Invalid or expired token provided!',
+      message: 'Invalid or expired token provided!',
       error
     })
   }

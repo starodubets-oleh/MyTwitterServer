@@ -64,13 +64,13 @@ const createPost = (req, res) => {
     .create({ content, userId })
     .then((result) => {
       res.status(201).json({
-        massage: 'Post created successfully',
+        message: 'Post created successfully',
         content: result
       });
     })
     .catch((error) => {
       res.status(500).json({
-        massage: 'Something went wrong',
+        message: 'Something went wrong',
         error
       });
     });
@@ -96,7 +96,7 @@ const updatePost = (req, res) => {
     })
     .catch((error) => {
       res.status(500).json({
-        massage: 'Something went wrong',
+        message: 'Something went wrong',
         error
       });
     });
@@ -120,7 +120,7 @@ const deletePost = (req, res) => {
     })
     .catch((error) => {
       res.status(500).json({
-        massage: 'Something went wrong',
+        message: 'Something went wrong',
         error
       });
     });
