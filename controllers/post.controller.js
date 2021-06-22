@@ -3,11 +3,14 @@ const models = require('../models');
 const showPosts = (req, res) => {
   const { authorId } = req.query;
   let params = {
-    include: {
+    include: [{
       model: models.User,
       attributes: [ 'name' ],
       required: true
-    }
+    },{
+      model: models.Comment,
+      required: false
+    }]
   };
   if (authorId) {
     params = {

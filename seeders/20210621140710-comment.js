@@ -3,12 +3,12 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
-      'users',
+      'comments',
       [
         {
-          name: 'John Doe',
-          email: 'JohnDoe@domen.com',
-          password: '123456',
+          comment: 'User table ыфвы',
+          userId: 2,
+          postId: 2,
           createdAt: new Date(),
           updatedAt: new Date()
         }
@@ -18,7 +18,11 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    
-    await queryInterface.bulkDelete('users', null, {});
+    /**
+     * Add commands to revert seed here.
+     *
+     * Example:
+     * await queryInterface.bulkDelete('People', null, {});
+     */
   }
 };
