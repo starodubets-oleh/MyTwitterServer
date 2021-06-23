@@ -14,11 +14,21 @@ module.exports = {
       },
       postId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        reference: {
+          model: {
+            tableName: 'posts'
+          }
+        }
       },
       userId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        reference: {
+          model: {
+            tableName: 'users'
+          }
+        }
       },
       createdAt: {
         allowNull: false,

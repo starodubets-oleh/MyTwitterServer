@@ -12,7 +12,12 @@ module.exports = {
         type: Sequelize.STRING
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        reference: {
+          model: {
+            tableName: 'users'
+          }
+        }
       },
       createdAt: {
         allowNull: false,

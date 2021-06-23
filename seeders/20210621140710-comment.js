@@ -7,8 +7,8 @@ module.exports = {
       [
         {
           comment: 'User table ыфвы',
-          userId: 2,
-          postId: 2,
+          userId: 1,
+          postId: 1,
           createdAt: new Date(),
           updatedAt: new Date()
         }

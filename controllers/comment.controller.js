@@ -1,13 +1,15 @@
 const models = require('../models');
 
 const createComment = (req, res) => {
-  const { userId } = req.userData;
+  const { id } = req.user;
   const { postId } = req.params;
   const { comment } = req.body;
 
   const data = {
-    postId: Number(postId), comment, userId
-  }
+    postId: Number(postId),
+    comment,
+    userId: id
+  };
 
   models.Comment
     .create(data)
@@ -27,4 +29,4 @@ const createComment = (req, res) => {
 
 module.exports = {
   createComment
-}
+};
