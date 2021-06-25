@@ -1,27 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const { getPosts, createPost, getPost, updatePost, deletePost } = require('../controllers/post');
 const verifyAuth = require('../middleware/verifyAuth');
-const validation = require('../middleware/validationMiddleware');
-const {
-  updatePostSchema,
-  createPostSchema,
-  showPostsSchema,
-  showPostSchema,
-  deletePostSchema
-} = require('../validation/validation');
+const validationMiddleware = require('../middleware/validationMiddleware');
+const {getPostSchema, createPostSchema, updatePostSchema, deletePostSchema, getPostsSchema} = require('../validation/validation')
 
-const {
-  showPosts,
-  createPost,
-  showPost,
-  updatePost,
-  deletePost
-} = require('../controllers/post.controller');
-
-router.get('/', verifyAuth, validation(showPostsSchema), showPosts);
-router.get('/:id', verifyAuth, validation(showPostSchema), showPost);
-router.patch('/:id', verifyAuth, validation(updatePostSchema), updatePost);
-router.post('/', verifyAuth, validation(createPostSchema), createPost);
-router.delete('/:id', verifyAuth, validation(deletePostSchema), deletePost);
+router.get('/posts', verifyAuth, getPosts);
+router.get('/user/:userId/posts', validationMiddleware(getPostsSchema), verifyAuth, getPosts);
+router.get('/posts/:postId', validationMiddleware(getPostSchema), verifyAuth, getPost);
+router.patch('/posts/:postId', validationMiddleware(updatePostSchema), verifyAuth, updatePost);
+router.delete('/posts/:postId', validationMiddleware(deletePostSchema), verifyAuth, deletePost);
+router.post('/posts', verifyAuth, validationMiddleware(createPostSchema), createPost);
 
 module.exports = router;

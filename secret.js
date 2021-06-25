@@ -1,1 +1,1 @@
-module.exports = 'secret'
+module.exports = 'something very secret'
