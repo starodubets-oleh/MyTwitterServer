@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const verifyAuth = require('../middleware/verifyAuth');
 
 const {
   showPosts,
@@ -7,12 +8,12 @@ const {
   showPost,
   updatePost,
   deletePost
-} = require('../controllers/post.controller')
+} = require('../controllers/post.controller');
 
-router.get("/posts", showPosts);
-router.get('/posts/:id', showPost);
-router.patch('/posts/:id', updatePost);
-router.post('/posts', createPost);
-router.delete('/posts/:id', deletePost);
+router.get('/', verifyAuth, showPosts);
+router.get('/:id', verifyAuth, showPost);
+router.patch('/:id', verifyAuth, updatePost);
+router.post('/', verifyAuth, createPost);
+router.delete('/:id', verifyAuth, deletePost);
 
 module.exports = router;
