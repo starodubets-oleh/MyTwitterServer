@@ -61,6 +61,7 @@ const login = (req, res) => {
               (err, token) => {
                 res.status(200).json({
                   message: 'Authentication successful!',
+                  massage: 'Authentication successful!',
                   token
                 });
               },
