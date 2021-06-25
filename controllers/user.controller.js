@@ -11,7 +11,7 @@ const signUp = (req, res) => {
     .then((result) => {
       if (result) {
         res.status(409).json({
-          massage: 'Email already exist!'
+          message: 'Email already exist!'
         });
       } else {
         const hashPassword = bcryptjs.hashSync(password, 7);
@@ -19,7 +19,7 @@ const signUp = (req, res) => {
           .create({ name, email, password: hashPassword })
           .then((result) => {
             res.status(201).json({
-              massage: 'User created successfully',
+              message: 'User created successfully',
               res: result
             });
           })
@@ -46,7 +46,7 @@ const login = (req, res) => {
     .then((user) => {
       if (user === null) {
         res.status(401).json({
-          massage: 'No such user!'
+          message: 'No such user!'
         });
       } else {
         bcryptjs.compare(password, user.password, (err, result) => {
@@ -60,6 +60,7 @@ const login = (req, res) => {
               secret,
               (err, token) => {
                 res.status(200).json({
+                  message: 'Authentication successful!',
                   massage: 'Authentication successful!',
                   token
                 });

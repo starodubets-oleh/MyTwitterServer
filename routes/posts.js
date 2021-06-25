@@ -1,6 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const verifyAuth = require('../middleware/verifyAuth');
+const validation = require('../middleware/validationMiddleware');
+const {
+  updatePostSchema,
+  createPostSchema,
+  showPostsSchema,
+  showPostSchema,
+  deletePostSchema
+} = require('../validation/validation');
 
 const {
   showPosts,
@@ -10,10 +18,10 @@ const {
   deletePost
 } = require('../controllers/post.controller');
 
-router.get('/', verifyAuth, showPosts);
-router.get('/:id', verifyAuth, showPost);
-router.patch('/:id', verifyAuth, updatePost);
-router.post('/', verifyAuth, createPost);
-router.delete('/:id', verifyAuth, deletePost);
+router.get('/', verifyAuth, validation(showPostsSchema), showPosts);
+router.get('/:id', verifyAuth, validation(showPostSchema), showPost);
+router.patch('/:id', verifyAuth, validation(updatePostSchema), updatePost);
+router.post('/', verifyAuth, validation(createPostSchema), createPost);
+router.delete('/:id', verifyAuth, validation(deletePostSchema), deletePost);
 
 module.exports = router;
