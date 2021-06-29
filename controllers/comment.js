@@ -2,7 +2,6 @@ const Comment = require('../models/Comment');
 const createComment = async (req, res) => {
   const { content } = req.body;
   const { postId } = req.params;
-  const { id } = req.user.attributes;
   try {
     const post = await req.user.related('post').where({ id: Number(postId) }).fetch();
     if (post.length === 0) {
@@ -27,7 +26,7 @@ const createComment = async (req, res) => {
 const updateComment = async (req, res) => {
   const { commentId } = req.params;
   const { updatedComment } = req.body;
-  const { id } = req.user;
+  const { id } = req.user.attributes;
   try {
     const comment = await Comment.where({ id: Number(commentId), user_id: id }).fetch({ require: false });
     if (comment === null) {
