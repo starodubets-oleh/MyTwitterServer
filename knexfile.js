@@ -3,22 +3,14 @@
 module.exports = {
 
   development: {
-    client: 'mysql',
+    client: 'sqlite3',
     connection: {
-      database: 'project',
-      user:     'root',
-      password: 'Zaq12wsx!'
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
+      filename: './dev.sqlite3'
     }
   },
+
   staging: {
-    client: 'mysql',
+    client: 'postgresql',
     connection: {
       database: 'my_db',
       user:     'username',
@@ -34,7 +26,7 @@ module.exports = {
   },
 
   production: {
-    client: 'mysql',
+    client: 'postgresql',
     connection: {
       database: 'my_db',
       user:     'username',

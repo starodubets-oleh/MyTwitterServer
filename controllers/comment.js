@@ -1,20 +1,16 @@
 const Comment = require('../models/Comment');
-const Post = require('../models/Post');
-const User = require('../models/Post');
-
 const createComment = async (req, res) => {
   const { content } = req.body;
   const { postId } = req.params;
-  const { id } = req.user;
+  const { id } = req.user.attributes;
   try {
-
-    const post = await Post.where({ id: Number(postId) }).fetch({ require: false });
-    if (post === null) {
+    const post = await req.user.related('post').where({ id: Number(postId) }).fetch();
+    if (post.length === 0) {
       res.status(404).json({
         massage: 'no entry'
       });
     } else {
-      const comment = await Comment.forge({ content, user_id: id, post_id: Number(postId) }).save();
+      const comment = await req.user.related('comment').create({ content, post_id: Number(postId) });
       res.status(201).json({
         message: 'created comment successful',
         data: comment

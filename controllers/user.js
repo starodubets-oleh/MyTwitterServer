@@ -7,7 +7,7 @@ const secret = require('../secret');
 const signUp = async (req, res) => {
   const { email, password, name } = req.body;
   try {
-    const findUser = await User.where({email}).fetch({ require: false });
+    const findUser = await User.where({ email }).fetch({ require: false });
     if (findUser) {
       res.status(409).json({
         message: 'Email already exist!'
@@ -31,7 +31,7 @@ const signUp = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.where({email}).fetch({ require: false });
+    const user = await User.where({ email }).fetch({ require: false });
     if (user === null) {
       res.status(401).json({
         message: 'No such user!'
@@ -53,7 +53,7 @@ const login = async (req, res) => {
                   token,
                   userName: user.attributes.name,
                   email: user.attributes.email,
-                  id: user.attributes.id,
+                  id: user.attributes.id
                 }
               });
             },

@@ -1,5 +1,5 @@
 const postsRoute = require('./posts');
-const userRoute = require('./user');
+const userRoute = require('./auth');
 const commentsRoute = require('./comments');
 
 module.exports = [

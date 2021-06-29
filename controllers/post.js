@@ -1,40 +1,36 @@
 const Post = require('../models/Post');
-const User = require('../models/User');
 
 const getPosts = async (req, res) => {
   const { userId } = req.params;
+
+  let condition = {};
+
+  if (userId) {
+    condition = {
+      ...condition,
+      user_id: Number(userId)
+    };
+  }
+
   try {
-    if (userId) {
-        const authorPosts = await Post.where({ user_id: Number(userId) }).fetchAll({
-          withRelated: [
-            {
-              user: (query) => query.select('id', 'name')
-            },
-            {
-              'comments.user': (query) => query.select('id', 'name')
-            }
-          ]
-        });
-        res.status(200).json({
-          data: authorPosts
-        });
-    } else {
-      const posts = await Post.fetchAll({
-        withRelated: [
-          {
-            user: (query) => query.select('id', 'name')
-          },
-          {
-            'comments.user': (query) => query.select('id', 'name')
-          }
-        ]
-      });
-      res.status(200).json({
-        data: posts
-      });
-    }
+    const posts = await Post.where(condition).fetchAll({
+      withRelated: [
+        {
+          user: (query) => query.select('id', 'name')
+        },
+        {
+          'comments.user': (query) => query.select('id', 'name')
+        }
+      ]
+    });
+    res.status(200).json({
+      data: posts
+    });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({
+      massage: 'Something went wrong',
+      error
+    });
   }
 };
 
@@ -64,9 +60,10 @@ const getPost = async (req, res) => {
 
 const createPost = async (req, res) => {
   const { content } = req.body;
-  const { id } = req.user;
+
   try {
-    const post = await Post.forge({ user_id: id, content }).save();
+    const post = await req.user.related('post').create({ content });
+
     res.status(201).json({
       message: 'created post successful',
       data: post
@@ -82,7 +79,7 @@ const createPost = async (req, res) => {
 const updatePost = async (req, res) => {
   const { postId } = req.params;
   const { updatedPost } = req.body;
-  const { id } = req.user;
+  const { id } = req.user.attributes;
   try {
     const post = await Post.where({ id: Number(postId), user_id: id }).fetch({ require: false });
     if (post === null) {
@@ -106,8 +103,9 @@ const updatePost = async (req, res) => {
 
 const deletePost = async (req, res) => {
   const { postId } = req.params;
+  const { id } = req.user.attributes;
   try {
-    const post = await Post.where({ id: Number(postId), user_id: req.user.id }).fetch({ require: false });
+    const post = await Post.where({ id: Number(postId), user_id: id }).fetch({ require: false });
     if (post === null) {
       res.status(404).json({
         massage: 'no entry'

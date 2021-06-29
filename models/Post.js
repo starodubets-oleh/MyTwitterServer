@@ -1,15 +1,12 @@
-
-const {bookshelf}  = require('../configs/db');
-const User = require('../models/User');
-const Comment = require('../models/Comment');
+const { bookshelf } = require('../configs/db');
 
 const Post = bookshelf.model('Post', {
   tableName: 'posts',
   comments() {
-    return this.hasMany(Comment);
+    return this.hasMany('Comment');
   },
   user() {
-    return this.belongsTo(User, 'user_id', 'id')
+    return this.belongsTo('User', 'user_id');
   },
   hasTimestamps: true
 });
