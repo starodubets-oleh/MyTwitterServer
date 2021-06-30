@@ -1,4 +1,27 @@
 const Comment = require('../models/Comment');
+
+const getComments = async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const post = await Comment.where({ post_id: Number(postId) }).fetchAll({
+      withRelated: [
+        {
+          user: (query) => query.select('id', 'name')
+        },
+      ]
+    });
+    res.status(200).json({
+      data: post
+    });
+  } catch (error) {
+    res.status(500).json({
+      massage: 'Something went wrong',
+      error
+    });
+  }
+};
+
+
 const createComment = async (req, res) => {
   const { content } = req.body;
   const { postId } = req.params;
@@ -36,7 +59,7 @@ const updateComment = async (req, res) => {
     } else {
       await comment.save({ content: updatedComment }, { patch: true });
       res.status(201).json({
-        message: 'created Comment successful',
+        message: 'updated comment successful',
         data: comment
       });
     }
@@ -59,7 +82,7 @@ const deleteComment = async (req, res) => {
     } else {
       await comment.destroy();
       res.status(201).json({
-        message: 'deleted Comment successful'
+        message: 'deleted comment successful'
       });
     }
   } catch (error) {
@@ -73,5 +96,6 @@ const deleteComment = async (req, res) => {
 module.exports = {
   createComment,
   updateComment,
-  deleteComment
+  deleteComment,
+  getComments
 };

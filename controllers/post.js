@@ -1,25 +1,12 @@
 const Post = require('../models/Post');
 
 const getPosts = async (req, res) => {
-  const { userId } = req.params;
-
-  let condition = {};
-
-  if (userId) {
-    condition = {
-      ...condition,
-      user_id: Number(userId)
-    };
-  }
 
   try {
-    const posts = await Post.where(condition).fetchAll({
+    const posts = await req.user.related('post').fetch({
       withRelated: [
         {
           user: (query) => query.select('id', 'name')
-        },
-        {
-          'comments.user': (query) => query.select('id', 'name')
         }
       ]
     });
@@ -41,9 +28,6 @@ const getPost = async (req, res) => {
       withRelated: [
         {
           user: (query) => query.select('id', 'name')
-        },
-        {
-          'comments.user': (query) => query.select('id', 'name')
         }
       ]
     });
@@ -89,7 +73,7 @@ const updatePost = async (req, res) => {
     } else {
       await post.save({ content: updatedPost }, { patch: true });
       res.status(201).json({
-        message: 'created post successful',
+        message: 'updated post successful',
         data: post
       });
     }

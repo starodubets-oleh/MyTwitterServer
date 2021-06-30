@@ -21,9 +21,15 @@ const deleteCommentSchema = {
     commentId: yup.string().trim().matches(/^[0-9]+$/, 'Is not a number').required()
   })
 };
+const getCommentSchema = {
+  params: yup.object({
+    postId: yup.string().trim().matches(/^[0-9]+$/, 'Is not a number').required()
+  })
+};
 
 module.exports = {
   createCommentSchema,
   updateCommentSchema,
-  deleteCommentSchema
+  deleteCommentSchema,
+  getCommentSchema
 };

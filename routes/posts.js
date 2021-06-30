@@ -12,10 +12,10 @@ const {
 } = require('../validation/validationPostSchema');
 
 router.get('/posts', verifyAuth, getPosts);
-router.get('/user/:userId/posts', validationMiddleware(getPostsSchema), verifyAuth, getPosts);
-router.get('/posts/:postId', validationMiddleware(getPostSchema), verifyAuth, getPost);
-router.patch('/posts/:postId', validationMiddleware(updatePostSchema), verifyAuth, updatePost);
-router.delete('/posts/:postId', validationMiddleware(deletePostSchema), verifyAuth, deletePost);
-router.post('/posts', validationMiddleware(createPostSchema), verifyAuth, createPost);
+router.get('/users/:userId/posts', verifyAuth, validationMiddleware(getPostsSchema), getPosts);
+router.get('/posts/:postId', verifyAuth, validationMiddleware(getPostSchema), getPost);
+router.patch('/posts/:postId', verifyAuth, validationMiddleware(updatePostSchema), updatePost);
+router.delete('/posts/:postId', verifyAuth, validationMiddleware(deletePostSchema), deletePost);
+router.post('/posts', verifyAuth, validationMiddleware(createPostSchema), createPost);
 
 module.exports = router;
