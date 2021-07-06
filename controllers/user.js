@@ -14,10 +14,9 @@ const signUp = async (req, res) => {
       });
     } else {
       const hashPassword = await bcryptjs.hashSync(password, 7);
-      const createdUser = await User.forge({ email, password: hashPassword, name }).save();
+      await User.forge({ email, password: hashPassword, name }).save();
       res.status(201).json({
-        message: 'User created',
-        data: createdUser
+        message: 'User created'
       });
     }
   } catch (error) {
@@ -33,7 +32,7 @@ const login = async (req, res) => {
   try {
     const user = await User.where({ email }).fetch({ require: false });
     if (user === null) {
-      res.status(401).json({
+      res.status(403).json({
         message: 'No such user!'
       });
     } else {
@@ -75,6 +74,26 @@ const login = async (req, res) => {
   }
 };
 
+const getUser = async (req, res) => {
+  try {
+    const user = await req.user.fetch();
+    const { id, name, user_img, email } = await user.attributes;
+    res.status(201).json({
+      data: {
+        id,
+        userName: name,
+        user_img : `${process.env.APP_URL}/images/${user_img}`,
+        email
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Something went wrong!',
+      error
+    });
+  }
+};
+
 const updateUserImage = async (req, res) => {
   try {
     const user = await req.user.save({ user_img: req.nameImg }, { patch: true });
@@ -82,7 +101,6 @@ const updateUserImage = async (req, res) => {
       message: 'Image updated'
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: 'Something went wrong!',
       error
@@ -110,5 +128,6 @@ module.exports = {
   signUp,
   login,
   updateUserImage,
-  updateUser
+  updateUser,
+  getUser
 };

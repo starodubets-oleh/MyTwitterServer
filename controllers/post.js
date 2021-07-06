@@ -15,7 +15,7 @@ const getPosts = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
@@ -36,7 +36,7 @@ const getPost = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
@@ -54,7 +54,7 @@ const createPost = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
@@ -68,7 +68,7 @@ const updatePost = async (req, res) => {
     const post = await Post.where({ id: Number(postId), user_id: id }).fetch({ require: false });
     if (post === null) {
       res.status(404).json({
-        massage: 'no entry'
+        message: 'no entry'
       });
     } else {
       await post.save({ content: updatedPost }, { patch: true });
@@ -79,7 +79,7 @@ const updatePost = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
@@ -92,7 +92,7 @@ const deletePost = async (req, res) => {
     const post = await Post.where({ id: Number(postId), user_id: id }).fetch({ require: false });
     if (post === null) {
       res.status(404).json({
-        massage: 'no entry'
+        message: 'no entry'
       });
     } else {
       await post.destroy();
@@ -102,7 +102,7 @@ const deletePost = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }

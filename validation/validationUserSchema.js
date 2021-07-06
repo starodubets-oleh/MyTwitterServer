@@ -24,6 +24,13 @@ const userImageSchema = {
   })
 };
 
+const userSchema = {
+  body: yup.object({
+    name: yup.string().min(2).max(10).required()
+  })
+}
+
 module.exports = {
-  userImageSchema
+  userImageSchema,
+  userSchema
 };

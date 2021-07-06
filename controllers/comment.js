@@ -1,21 +1,31 @@
 const Comment = require('../models/Comment');
+const Post = require('../models/Post');
 
 const getComments = async (req, res) => {
   const { postId } = req.params;
   try {
-    const post = await Comment.where({ post_id: Number(postId) }).fetchAll({
+    const post = await Post.where({id: postId}).fetch({ require: false })
+    const comments = await Comment.where({ post_id: Number(postId) }).fetchAll({
       withRelated: [
         {
           user: (query) => query.select('id', 'name')
         },
       ]
     });
-    res.status(200).json({
-      data: post
-    });
+    if (post) {
+      res.status(200).json({
+        data: comments
+      });
+      
+    } else {
+      res.status(404).json({
+        message: 'no entry',
+        comments
+      });
+    }
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
@@ -29,7 +39,7 @@ const createComment = async (req, res) => {
     const post = await req.user.related('post').where({ id: Number(postId) }).fetch();
     if (post.length === 0) {
       res.status(404).json({
-        massage: 'no entry'
+        message: 'no entry'
       });
     } else {
       const comment = await req.user.related('comment').create({ content, post_id: Number(postId) });
@@ -40,7 +50,7 @@ const createComment = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong!',
+      message: 'Something went wrong!',
       error
     });
   }
@@ -54,7 +64,7 @@ const updateComment = async (req, res) => {
     const comment = await Comment.where({ id: Number(commentId), user_id: id }).fetch({ require: false });
     if (comment === null) {
       res.status(404).json({
-        massage: 'no entry'
+        message: 'no entry'
       });
     } else {
       await comment.save({ content: updatedComment }, { patch: true });
@@ -65,7 +75,7 @@ const updateComment = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
@@ -77,7 +87,7 @@ const deleteComment = async (req, res) => {
     const comment = await Comment.where({ id: Number(commentId), user_id: req.user.id }).fetch({ require: false });
     if (comment === null) {
       res.status(404).json({
-        massage: 'no entry'
+        message: 'no entry'
       });
     } else {
       await comment.destroy();
@@ -87,7 +97,7 @@ const deleteComment = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
