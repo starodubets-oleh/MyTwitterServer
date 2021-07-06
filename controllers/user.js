@@ -53,7 +53,8 @@ const login = async (req, res) => {
                   token,
                   userName: user.attributes.name,
                   email: user.attributes.email,
-                  id: user.attributes.id
+                  id: user.attributes.id,
+                  user_img: `${process.env.APP_URL}/images/${user.attributes.user_img}`
                 }
               });
             },
@@ -74,7 +75,40 @@ const login = async (req, res) => {
   }
 };
 
+const updateUserImage = async (req, res) => {
+  try {
+    const user = await req.user.save({ user_img: req.nameImg }, { patch: true });
+    res.status(201).json({
+      message: 'Image updated'
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Something went wrong!',
+      error
+    });
+  }
+};
+
+const updateUser = async (req, res) => {
+  const { name } = req.body;
+  try {
+    await req.user.save({ name }, { patch: true });
+    res.status(201).json({
+      message: 'Name updated'
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Something went wrong!',
+      error
+    });
+  }
+};
+
 module.exports = {
   signUp,
-  login
+  login,
+  updateUserImage,
+  updateUser
 };
