@@ -14,7 +14,7 @@ const signUp = async (req, res) => {
       });
     } else {
       const hashPassword = await bcryptjs.hashSync(password, 7);
-      await User.forge({ email, password: hashPassword, name }).save();
+      await User.forge({ email, password: hashPassword, name, user_img: '1.jpeg' }).save();
       res.status(201).json({
         message: 'User created'
       });
