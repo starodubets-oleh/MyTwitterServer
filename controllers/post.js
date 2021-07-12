@@ -1,42 +1,64 @@
 const Post = require('../models/Post');
+const User = require('../models/User');
 
-const getPosts = async (req, res) => {
-
+const getUserPosts = async (req, res) => {
+  const { userId } = req.params;
+  const { point, size } = req.query
   try {
-    const posts = await req.user.related('post').fetch({
-      withRelated: [
-        {
-          user: (query) => query.select('id', 'name')
-        }
-      ]
-    });
-    res.status(200).json({
-      data: posts
-    });
+    const user = await User.where({ id: Number(userId) }).fetch({ require: false });
+    if (user) {      
+      const posts = await user.related('post')
+      .orderBy('id', 'DESC') //Ascending ('ASC') or descending ('DESC') order
+      .fetchCursorPage({
+        limit: Number(size) || 10,
+        after: [Number(point) || null],
+        withRelated: [
+          {
+            user: (query) => query.select('id', 'name', 'user_img')
+          }
+        ]
+      });
+      res.status(200).json({
+        data: posts,
+        pagination: posts.pagination,
+      });
+    } else {
+      res.status(404).json({
+        message: 'no entry'
+      });
+    }
   } catch (error) {
+    console.log(error);
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
 };
 
-const getPost = async (req, res) => {
-  const { postId } = req.params;
+const getUserPost = async (req, res) => {
+  const { postId, userId } = req.params;
   try {
-    const post = await Post.where({ id: Number(postId) }).fetch({
-      withRelated: [
-        {
-          user: (query) => query.select('id', 'name')
-        }
-      ]
-    });
-    res.status(200).json({
-      data: post
-    });
+    const user = await User.where({ id: Number(userId) }).fetch({ require: false });
+    if (user) {
+      const post = await user.related('post').where({ id: Number(postId) }).fetch({
+        withRelated: [
+          {
+            user: (query) => query.select('id', 'name', 'user_img')
+          }
+        ]
+      });
+      res.status(200).json({
+        data: post
+      });
+    } else {
+      res.status(404).json({
+        message: 'no entry'
+      });
+    }
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
@@ -54,7 +76,7 @@ const createPost = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
@@ -68,7 +90,7 @@ const updatePost = async (req, res) => {
     const post = await Post.where({ id: Number(postId), user_id: id }).fetch({ require: false });
     if (post === null) {
       res.status(404).json({
-        massage: 'no entry'
+        message: 'no entry'
       });
     } else {
       await post.save({ content: updatedPost }, { patch: true });
@@ -79,7 +101,7 @@ const updatePost = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
@@ -92,7 +114,7 @@ const deletePost = async (req, res) => {
     const post = await Post.where({ id: Number(postId), user_id: id }).fetch({ require: false });
     if (post === null) {
       res.status(404).json({
-        massage: 'no entry'
+        message: 'no entry'
       });
     } else {
       await post.destroy();
@@ -102,16 +124,16 @@ const deletePost = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      massage: 'Something went wrong',
+      message: 'Something went wrong',
       error
     });
   }
 };
 
 module.exports = {
-  getPosts,
   createPost,
-  getPost,
   updatePost,
-  deletePost
+  deletePost,
+  getUserPosts,
+  getUserPost
 };

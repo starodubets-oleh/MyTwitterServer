@@ -14,10 +14,9 @@ const signUp = async (req, res) => {
       });
     } else {
       const hashPassword = await bcryptjs.hashSync(password, 7);
-      const createdUser = await User.forge({ email, password: hashPassword, name }).save();
+      await User.forge({ email, password: hashPassword, name, user_img: '1.jpeg' }).save();
       res.status(201).json({
-        message: 'User created',
-        data: createdUser
+        message: 'User created'
       });
     }
   } catch (error) {
@@ -33,7 +32,7 @@ const login = async (req, res) => {
   try {
     const user = await User.where({ email }).fetch({ require: false });
     if (user === null) {
-      res.status(401).json({
+      res.status(403).json({
         message: 'No such user!'
       });
     } else {
@@ -51,9 +50,10 @@ const login = async (req, res) => {
                 message: 'Authentication successful!',
                 data: {
                   token,
-                  userName: user.attributes.name,
                   email: user.attributes.email,
-                  id: user.attributes.id
+                  id: user.attributes.id,
+                  name: user.attributes.name,
+                  fullPath: `${process.env.APP_URL}/images/${user.attributes.user_img}`
                 }
               });
             },
@@ -74,7 +74,83 @@ const login = async (req, res) => {
   }
 };
 
+const getUser = async (req, res) => {
+  try {
+    const user = await req.user.fetch();
+    const { id, name, user_img, email } = await user.attributes;
+    res.status(201).json({
+      data: {
+        id,
+        name,
+        fullPath: `${process.env.APP_URL}/images/${user_img}`,
+        email
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Something went wrong!',
+      error
+    });
+  }
+};
+
+const getUsers = async (req, res) => {
+  const { page, size } = req.query
+  try {
+    const users = await User.collection().query((user) => user.select('id', 'name', 'email', 'user_img'))
+      .orderBy('name', 'ASC')
+      .fetchPage({
+        pageSize: Number(size) || 10,
+        page: Number(page) || 0
+      });
+    res.status(200).json({
+      data: users,
+      pagination: users.pagination
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Something went wrong!',
+      error
+    });
+  }
+};
+
+const updateUserImage = async (req, res) => {
+  try {
+    const user = await req.user.save({ user_img: req.nameImg }, { patch: true });
+    res.status(201).json({
+      message: 'Image updated'
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Something went wrong!',
+      error
+    });
+  }
+};
+
+const updateUser = async (req, res) => {
+  const { name } = req.body;
+  try {
+    await req.user.save({ name }, { patch: true });
+    res.status(201).json({
+      message: 'Name updated'
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Something went wrong!',
+      error
+    });
+  }
+};
+
 module.exports = {
   signUp,
-  login
+  login,
+  updateUserImage,
+  updateUser,
+  getUser,
+  getUsers
 };

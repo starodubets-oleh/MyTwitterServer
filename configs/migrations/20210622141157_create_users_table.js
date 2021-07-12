@@ -7,6 +7,7 @@ exports.up = async function(knex) {
         table.string('email').notNullable();
         table.string('password').notNullable();
         table.string('name').notNullable();
+        table.string('user_img').notNullable();
         table.timestamps(true, true);
 
         table.unique('email');

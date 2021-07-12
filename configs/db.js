@@ -1,8 +1,12 @@
 const knex = require('knex');
 const knexFile = require('./knexfile');
 
-const db = knex( knexFile[process.env.NODE_INV || 'development']);
+const db = knex(knexFile);
 
 const bookshelf = require('bookshelf')(db);
+const cursor = require('bookshelf-cursor-pagination').default;
+const virtuals = require('bookshelf-virtuals-plugin');
 
-module.exports = {db, bookshelf};
+bookshelf.plugin([ virtuals, cursor ]);
+
+module.exports = { db, bookshelf };

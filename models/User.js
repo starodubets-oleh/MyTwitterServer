@@ -9,6 +9,13 @@ const User = bookshelf.model('User', {
   comment() {
     return this.hasMany('Comment');
   },
+  virtuals: {
+    fullPath: {
+      get() {
+        return `${process.env.APP_URL}/images/${this.get('user_img')}`;
+      }
+    }
+  },
   hasTimestamps: true
 });
 module.exports = User;

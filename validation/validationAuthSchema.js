@@ -10,7 +10,7 @@ const userRegistrationSchema = {
 
 const userLoginSchema = {
   body: yup.object({
-    email: yup.string('Email must be a valid email!').email().required(),
+    email: yup.string('Email must be a valid one!').email().required(),
     password: yup.string().required()
   })
 };

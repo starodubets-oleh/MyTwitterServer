@@ -1,6 +1,6 @@
 const validation = (schema) => async (req, res, next) => {
-  const { body: bodyValidation, params: paramsValidation, query: queryValidation } = schema;
-  const { body, params, query } = req;
+  const { body: bodyValidation, params: paramsValidation, query: queryValidation, files: filesValidation } = schema;
+  const { body, params, query, files } = req;
 
   try {
     if (bodyValidation) {
@@ -13,6 +13,10 @@ const validation = (schema) => async (req, res, next) => {
 
     if (queryValidation) {
       await queryValidation.validate(query);
+    }
+
+    if (filesValidation) {
+      await filesValidation.validate(files);
     }
 
     next();
