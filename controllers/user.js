@@ -50,10 +50,10 @@ const login = async (req, res) => {
                 message: 'Authentication successful!',
                 data: {
                   token,
-                  userName: user.attributes.name,
                   email: user.attributes.email,
                   id: user.attributes.id,
-                  user_img: `${process.env.APP_URL}/images/${user.attributes.user_img}`
+                  name: user.attributes.name,
+                  fullPath: `${process.env.APP_URL}/images/${user.attributes.user_img}`
                 }
               });
             },
@@ -81,12 +81,34 @@ const getUser = async (req, res) => {
     res.status(201).json({
       data: {
         id,
-        userName: name,
-        user_img : `${process.env.APP_URL}/images/${user_img}`,
+        name,
+        fullPath: `${process.env.APP_URL}/images/${user_img}`,
         email
       }
     });
   } catch (error) {
+    res.status(500).json({
+      message: 'Something went wrong!',
+      error
+    });
+  }
+};
+
+const getUsers = async (req, res) => {
+  const { page, size } = req.query
+  try {
+    const users = await User.collection().query((user) => user.select('id', 'name', 'email', 'user_img'))
+      .orderBy('name', 'ASC')
+      .fetchPage({
+        pageSize: Number(size) || 10,
+        page: Number(page) || 0
+      });
+    res.status(200).json({
+      data: users,
+      pagination: users.pagination
+    });
+  } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: 'Something went wrong!',
       error
@@ -129,5 +151,6 @@ module.exports = {
   login,
   updateUserImage,
   updateUser,
-  getUser
+  getUser,
+  getUsers
 };

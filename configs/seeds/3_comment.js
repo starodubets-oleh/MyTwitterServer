@@ -1,42 +1,19 @@
 const faker = require('faker');
 
+const arr = [ ...Array(100000).keys() ];
+
 exports.seed = function(knex) {
-  return knex('comments').insert([
-    { id: 1, content: faker.lorem.slug(), user_id: 1, post_id: 1 },
-    { id: 2, content: faker.lorem.slug(), user_id: 2, post_id: 2 },
-    { id: 3, content: faker.lorem.slug(), user_id: 3, post_id: 3 },
-    { id: 4, content: faker.lorem.slug(), user_id: 1, post_id: 4 },
-    { id: 5, content: faker.lorem.slug(), user_id: 2, post_id: 5 },
-    { id: 6, content: faker.lorem.slug(), user_id: 3, post_id: 6 },
-    { id: 7, content: faker.lorem.slug(), user_id: 1, post_id: 7 },
-    { id: 8, content: faker.lorem.slug(), user_id: 2, post_id: 8 },
-    { id: 9, content: faker.lorem.slug(), user_id: 3, post_id: 9 },
-    { id: 10, content: faker.lorem.slug(), user_id: 1, post_id: 9 },
-    { id: 11, content: faker.lorem.slug(), user_id: 2, post_id: 8 },
-    { id: 12, content: faker.lorem.slug(), user_id: 3, post_id: 7 },
-    { id: 13, content: faker.lorem.slug(), user_id: 1, post_id: 6 },
-    { id: 14, content: faker.lorem.slug(), user_id: 2, post_id: 5 },
-    { id: 15, content: faker.lorem.slug(), user_id: 3, post_id: 4 },
-    { id: 16, content: faker.lorem.slug(), user_id: 1, post_id: 3 },
-    { id: 17, content: faker.lorem.slug(), user_id: 2, post_id: 2 },
-    { id: 18, content: faker.lorem.slug(), user_id: 3, post_id: 1 },
-    { id: 19, content: faker.lorem.slug(), user_id: 1, post_id: 1 },
-    { id: 20, content: faker.lorem.slug(), user_id: 2, post_id: 2 },
-    { id: 21, content: faker.lorem.slug(), user_id: 3, post_id: 3 },
-    { id: 22, content: faker.lorem.slug(), user_id: 1, post_id: 4 },
-    { id: 23, content: faker.lorem.slug(), user_id: 2, post_id: 5 },
-    { id: 24, content: faker.lorem.slug(), user_id: 3, post_id: 6 },
-    { id: 25, content: faker.lorem.slug(), user_id: 1, post_id: 7 },
-    { id: 26, content: faker.lorem.slug(), user_id: 2, post_id: 8 },
-    { id: 27, content: faker.lorem.slug(), user_id: 3, post_id: 9 },
-    { id: 28, content: faker.lorem.slug(), user_id: 1, post_id: 9 },
-    { id: 29, content: faker.lorem.slug(), user_id: 2, post_id: 8 },
-    { id: 30, content: faker.lorem.slug(), user_id: 3, post_id: 7 },
-    { id: 31, content: faker.lorem.slug(), user_id: 1, post_id: 6 },
-    { id: 32, content: faker.lorem.slug(), user_id: 2, post_id: 5 },
-    { id: 33, content: faker.lorem.slug(), user_id: 3, post_id: 4 },
-    { id: 34, content: faker.lorem.slug(), user_id: 1, post_id: 3 },
-    { id: 35, content: faker.lorem.slug(), user_id: 2, post_id: 2 },
-    { id: 36, content: faker.lorem.slug(), user_id: 3, post_id: 1 },
-  ]);
+  return knex('comments').del().then(() => {
+    return knex('comments').insert(
+      arr.reduce((acc, item) => {
+        acc.push({
+          id: item + 1,
+          content: faker.lorem.slug(),
+          user_id: Math.ceil(Math.random() * 50),
+          post_id: Math.ceil(Math.random() * 5000)
+        });
+        return acc;
+      }, [])
+    );
+  });
 };

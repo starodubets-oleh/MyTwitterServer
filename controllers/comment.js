@@ -8,7 +8,7 @@ const getComments = async (req, res) => {
     const comments = await Comment.where({ post_id: Number(postId) }).fetchAll({
       withRelated: [
         {
-          user: (query) => query.select('id', 'name')
+          user: (query) => query.select('id', 'name', 'user_img')
         },
       ]
     });
